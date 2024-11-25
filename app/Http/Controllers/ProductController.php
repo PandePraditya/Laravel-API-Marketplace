@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductController extends Controller
 {
@@ -12,35 +13,46 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $keyword = $request->query('keyword');
+        // Get the search keyword from the request
+        $keyword = $request->input('keyword');
 
-        $products = Product::with(['brand', 'category'])
-            ->where(function ($query) use ($keyword) {
-                $query->where('name', 'like', '%' . $keyword . '%')
-                    ->orWhere('price', 'like', '%' . $keyword . '%')
-                    ->orWhere('stock', 'like', '%' . $keyword . '%')
-                    ->orWhereHas('brand', function ($query) use ($keyword) {
-                        $query->where('name', 'like', '%' . $keyword . '%');
-                    })
-                    ->orWhereHas('category', function ($query) use ($keyword) {
-                        $query->where('name', 'like', '%' . $keyword . '%');
-                    });
-            })
-            ->orderBy('category_id', 'asc')
-            ->paginate(10);
+        // Start the query for products
+        $query = Product::with(['brand', 'category']);
 
-        $products->getCollection()->transform(function ($product) {
+        // If a keyword is provided, apply the search conditions
+        if ($keyword) {
+            // return $keyword;
+            $query->where('name', 'like', "%{$keyword}%")
+            ->orWhere('price', 'like', "%{$keyword}%")
+            ->orWhere('stock', 'like', "%{$keyword}%")
+            ->orWhereHas('category', function (Builder $q) use ($keyword) {
+                $q->where('name', 'like', "%{$keyword}%");
+            });
+        }
+
+        // Paginate the results
+        $products = $query->orderBy('name', 'asc')->paginate(10);
+
+        // Format the results
+        $formattedProducts = $products->map(function ($product) {
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
                 'stock' => $product->stock,
                 'brand' => $product->brand ? $product->brand->name : null, // Display brand name, null if not found
-                'category' => $product->category ? $product->category->name : null, // Display category name, null if not found
+                'category' => $product->category ? $product->category->name : null // Display category name, null if not found
             ];
         });
 
-        return response()->json($products);
+        // Return the paginated products as JSON
+        return response()->json([
+            'data' => $formattedProducts,
+            'current_page' => $products->currentPage(),
+            'last_page' => $products->lastPage(),
+            'per_page' => $products->perPage(),
+            'total' => $products->total(),
+        ]);
     }
     public function create()
     {
