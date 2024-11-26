@@ -16,7 +16,7 @@ class UsersSeeder extends Seeder
         $now = now();
         DB::table('users')->insert([
             'username' => 'admin',
-            'email' => 'V9HkF@example.com',
+            'email' => 'admin@gmail.com',
             'password' => bcrypt('admin123'),
             'created_at' => $now,
             'updated_at' => $now,

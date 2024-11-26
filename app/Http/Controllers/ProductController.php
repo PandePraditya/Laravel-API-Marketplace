@@ -27,6 +27,9 @@ class ProductController extends Controller
             ->orWhere('stock', 'like', "%{$keyword}%")
             ->orWhereHas('category', function (Builder $q) use ($keyword) {
                 $q->where('name', 'like', "%{$keyword}%");
+            })
+            ->orWhereHas('brand', function (Builder $q) use ($keyword) {
+                $q->where('name', 'like', "%{$keyword}%");
             });
         }
 
