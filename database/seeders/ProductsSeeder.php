@@ -41,7 +41,6 @@ class ProductsSeeder extends Seeder
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
-            // Add more products as needed
         ]);
     }
 }
