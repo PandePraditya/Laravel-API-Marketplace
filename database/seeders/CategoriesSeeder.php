@@ -15,14 +15,16 @@ class CategoriesSeeder extends Seeder
     {
         $now = now();
         DB::table('categories')->insert([
-            'name' => 'Sepatu',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-        DB::table('categories')->insert([
-            'name' => 'Elektronik',
-            'created_at' => $now,
-            'updated_at' => $now,
+            [
+                'name' => 'Sepatu',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'name' => 'Elektronik',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]
         ]);
     }
 }

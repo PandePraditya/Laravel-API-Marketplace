@@ -15,14 +15,16 @@ class BrandsSeeder extends Seeder
     {
         $now = now();
         DB::table('brands')->insert([
-            'name' => 'Adidas',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-        DB::table('brands')->insert([
-            'name' => 'Sony',
-            'created_at' => $now,
-            'updated_at' => $now,
+            [
+                'name' => 'Adidas',
+                'created_at' => $now,
+                'updated_at' => $now
+            ],
+            [
+                'name' => 'Sony',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]
         ]);
     }
 }
